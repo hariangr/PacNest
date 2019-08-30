@@ -31,17 +31,17 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     this.connections.forEach(client => {
       client.send(JSON.stringify({ "event": "cheese" }));
+      this.logger.log('chesxe');
     });
   }
 
   @SubscribeMessage('save')
   savePic(client: any, payload: any) {
+    this.logger.log(`Picture taken`)
     let fileName = payload.filename;
     let encoded = payload.encoded;
 
     let pathDir = `/Users/hariangr/Documents/Developer/Pacamera/saver/${this.curSession}`
-
-    fs.mkdirSync(pathDir);
     fs.writeFileSync(`/Users/hariangr/Documents/Developer/Pacamera/saver/${this.curSession}/${fileName}.jpg`, encoded, 'base64');
 
     this.logger.log(`Picture taken: ${fileName}`)
@@ -56,6 +56,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   nextOne(client: any, payload: any) {
     this.logger.log('New session')
     this.curSession = payload;
-    return this.curSession;
+    let pathDir = `/Users/hariangr/Documents/Developer/Pacamera/saver/${this.curSession}`
+    fs.mkdirSync(pathDir);
+    return JSON.stringify({ "event": "newsession", "data": this.curSession });
   }
 }
