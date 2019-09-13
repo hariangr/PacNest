@@ -7,9 +7,10 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build:mac": "npm run build && electron-packager . pacamera --platform=darwin",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "npm run build && electron ./dist/main.js",
-    "start:dev": "tsc-watch -p tsconfig.build.json --onSuccess \"node dist/main.js\"",
+    "start:dev": "tsc-watch -p tsconfig.build.json --onSuccess \"electron dist/main.js\"",
     "start:debug": "tsc-watch -p tsconfig.build.json --onSuccess \"node --inspect-brk dist/main.js\"",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
