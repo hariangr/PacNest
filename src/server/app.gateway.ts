@@ -2,6 +2,7 @@ import { SubscribeMessage, WebSocketGateway, OnGatewayInit, WebSocketServer, OnG
 import { Logger } from '@nestjs/common';
 import { Server } from 'tls';
 import * as fs from "fs";
+import { ipcMain } from "electron";
 
 @WebSocketGateway()
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -18,6 +19,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     this.logger.log("Someone login");
     this.connections.push(client);
     // client.send({"event": "logined", "data": "ur"});
+    ipcMain.emit('log', Date.now());
   }
 
   afterInit(server: any) {
@@ -27,6 +29,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   @SubscribeMessage('cheese')
   handleMessage(client: any, payload: any) {
     this.logger.log('everybody cheese')
+    ipcMain.emit('log', Date.now());
     // client.send(payload);
 
     this.connections.forEach(client => {
@@ -38,6 +41,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   @SubscribeMessage('save')
   savePic(client: any, payload: any) {
     this.logger.log(`Picture taken`)
+    ipcMain.emit('log', Date.now());
     let fileName = payload.filename;
     let encoded = payload.encoded;
 
@@ -50,11 +54,13 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   @SubscribeMessage('ping')
   amIConnected(client: any, payload: any) {
     client.send(JSON.stringify({ "event": "ping" }));
+    ipcMain.emit('log', Date.now());
   }
 
   @SubscribeMessage('new')
   nextOne(client: any, payload: any) {
     this.logger.log('New session')
+    ipcMain.emit('log', Date.now());
     this.curSession = payload;
     let pathDir = `/Users/hariangr/Documents/Developer/Pacamera/saver/${this.curSession}`
     fs.mkdirSync(pathDir);

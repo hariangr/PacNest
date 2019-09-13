@@ -3,7 +3,7 @@ import * as path from "path";
 import * as nest from "./server/main";
 
 // In main process.
-const { ipcMain } = require('electron')
+import { ipcMain } from "electron";
 
 
 let win: BrowserWindow;
@@ -12,10 +12,13 @@ ipcMain.on('hello', (event, arg) => {
   console.log(arg) // prints "ping"
   console.log('aaaa');
 
+  ipcMain.emit('asynchronous-reply', ',,,');
+  ipcMain.emit
   event.reply('asynchronous-reply', 'pong')
+  win.webContents.send('log', Date.now());
 
-  app.quit();
-  nest.closeNest();
+  // app.quit();
+  // nest.closeNest();
 })
 
 
@@ -42,7 +45,7 @@ function createWindow() {
     win = null
   })
 
-  nest.bootstrap();
+  nest.bootstrap(win);
 }
 
 // This method will be called when Electron has finished
