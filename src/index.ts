@@ -5,22 +5,17 @@ import * as nest from "./server/main";
 // In main process.
 import { ipcMain } from "electron";
 
-
 let win: BrowserWindow;
 
-ipcMain.on('hello', (event, arg) => {
-  console.log(arg) // prints "ping"
-  console.log('aaaa');
-
-  ipcMain.emit('asynchronous-reply', ',,,');
-  ipcMain.emit
-  event.reply('asynchronous-reply', 'pong')
-  win.webContents.send('log', Date.now());
-
-  // app.quit();
-  // nest.closeNest();
+ipcMain.on('enableServer', (event, arg) => {
+  nest.bootstrap();
+  win.webContents.send("logger", "Server started");
 })
 
+ipcMain.on('disableServer', (event, arg) => {
+  nest.closeNest();
+  win.webContents.send("logger", "Server closed");
+})
 
 function createWindow() {
   // Create the browser window.
@@ -45,7 +40,7 @@ function createWindow() {
     win = null
   })
 
-  nest.bootstrap(win);
+  return win;
 }
 
 // This method will be called when Electron has finished
