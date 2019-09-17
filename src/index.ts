@@ -8,7 +8,7 @@ import { ipcMain } from "electron";
 let win: BrowserWindow;
 
 ipcMain.on('enableServer', (event, arg) => {
-  nest.bootstrap();
+  nest.bootstrap(arg);
   win.webContents.send("logger", "Server started");
 })
 

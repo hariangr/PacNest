@@ -6,10 +6,10 @@ import { BrowserWindow } from 'electron';
 
 let nestApp: INestApplication;
 
-export async function bootstrap() {
+export async function bootstrap(port: number) {
     nestApp = await NestFactory.create(AppModule);
     nestApp.useWebSocketAdapter(new WsAdapter(nestApp));
-    await nestApp.listen(3000);
+    await nestApp.listen(port != null ? port : 3000);
 }
 
 export async function closeNest() {
